@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: my_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - my-network
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: college
+      DB_USER: user
+      DB_PASSWORD: 12345678
+
+  db:
+    image: mariadb:11
+    container_name: mariadb_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: college
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 12345678
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - my-network
+
+volumes:
+  mariadb_data:
+
+networks:
+  my-network:
+    driver: bridge
